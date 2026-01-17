@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFダウンロードセンター</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
+        .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .file-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; }
+        .btn { background: #0061ff; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-size: 14px; }
+        .loading { text-align: center; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>📄 資料ダウンロード一覧</h3>
+        <div id="list" class="loading">読み込み中...</div>
+    </div>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4BECIdd8GZLSOo1zSMONOpjsK5Qw2pQbuVkzxUW9BOHGU6aMNXwPyY5mWD3GHVcuS1A/exec';
+
+        // GASからファイル一覧を取得
+        fetch(GAS_URL)
+            .then(res => res.json())
+            .then(data => {
+                const listDiv = document.getElementById('list');
+                listDiv.innerHTML = ''; // 読み込み中を消す
+                
+                if (data.length === 0) {
+                    listDiv.innerText = 'ファイルが見つかりません。';
+                    return;
+                }
+
+                data.forEach(file => {
+                    const item = document.createElement('div');
+                    item.className = 'file-item';
+                    item.innerHTML = `
+                        <span>${file.name}</span>
+                        <a href="${file.url}" class="btn">保存</a>
+                    `;
+                    listDiv.appendChild(item);
+                });
+            })
+            .catch(err => {
+                document.getElementById('list').innerText = 'エラーが発生しました。';
+                console.error(err);
+            });
+    </script>
+</body>
+</html>
