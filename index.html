@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KYカード ダウンロード</title>
+    <title>KYカード ダウンロード ページ</title>
     <style>
-        /* 全体のスタイル：背景色 #F2F7FC */
+        /* 全体のスタイル */
         body {
             font-family: "HG丸ｺﾞｼｯｸM-PRO", "HGMaruGothicMPRO", "Corporate Logo Medium", sans-serif;
             background-color: #f2f7fc;
@@ -22,7 +22,7 @@
             text-align: center;
         }
 
-        /* ヘッダー：PCでは中央寄せ */
+        /* ヘッダー全体の枠線と背景設定 */
         .header-section {
             background-image: url('タイトル用.jpg');
             background-size: cover;
@@ -31,17 +31,21 @@
             padding: 60px 0;
             margin-bottom: 40px;
             position: relative;
+            border: 4px solid #333; 
+            border-radius: 16px;    
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
         }
 
-        /* タイトル装飾 */
+        /* 3行タイトル装飾 */
         .header-title {
             font-size: 56px;
             font-weight: bold;
             color: #ffff00;
             margin: 0;
-            line-height: 1.3;
+            line-height: 1.2;
             letter-spacing: 0.3em; 
-            padding-left: 0.3em; 
+            text-align: center;
+            padding-left: 0.3em;
             text-shadow: 
                 3px 3px 0 #000, -3px -3px 0 #000,
                 3px -3px 0 #000, -3px 3px 0 #000,
@@ -49,7 +53,7 @@
                 0 3px 0 #000, 0 -3px 0 #000;
         }
 
-        /* 外枠：背景 #D0E2F4 の破線枠 */
+        /* コンテンツ外枠：背景 #D0E2F4 */
         .content-fieldset {
             background-color: #d0e2f4;
             border: 3px dashed #333;
@@ -79,7 +83,7 @@
             width: 100%;
         }
 
-        /* プレビュー画像 */
+        /* 左側：サンプル画像エリア */
         .preview-side {
             flex: 1;
             max-width: 380px;
@@ -104,7 +108,7 @@
             text-align: center;
         }
 
-        /* 操作エリア */
+        /* 右側：操作エリア */
         .action-side {
             flex: 1;
             display: flex;
@@ -131,7 +135,6 @@
 
         .select-wrapper { margin-bottom: 25px; }
 
-        /* セレクトボックス */
         select {
             font-family: inherit;
             width: 100%;
@@ -155,7 +158,7 @@
         }
         select option { text-align: left; font-weight: normal; }
 
-        /* 立体的なボタン */
+        /* 立体ボタン */
         .download-btn {
             font-family: inherit;
             display: block;
@@ -181,27 +184,34 @@
 
         #loading-msg { font-size: 13px; text-align: center; color: #555; margin-top: 8px; font-weight: bold; }
 
-        /* --- スマホ用調整（画面幅が600px以下の時） --- */
+        /* --- スマホ用調整 --- */
         @media screen and (max-width: 600px) {
-            /* 背景画像：左端のキャラクターの体が見えるように調整 */
-            .header-section {
-                background-position: 0% center; /* 0%にすることで左端を基準にします */
+            .content-grid { 
+                flex-direction: column-reverse; 
+                align-items: center; 
+                gap: 20px; 
             }
             
-            /* タイトル文字：キャラクターの体と重ならないよう、さらに右へ移動 */
+            .header-section { background-position: 0% center; }
             .header-title { 
-                font-size: 26px; /* 画面に収まるようさらに微調整 */
+                font-size: 26px; 
                 letter-spacing: 0.05em; 
-                padding-left: 170px; /* 体が見えるように左側の空白を広げました */
+                padding-left: 170px; 
                 text-align: left; 
             }
-
             .fieldset-title { font-size: 24px; margin-left: 10px; }
             .content-fieldset { padding: 20px 15px; }
-            .content-grid { flex-direction: column; align-items: center; gap: 20px; }
-            .description { font-size: 18px; margin-top: 10px; text-align: center; }
+            
+            /* スマホ時の余白調整（説明文の下に30pxのスペースを追加） */
+            .description { 
+                font-size: 18px; 
+                margin-top: 10px; 
+                margin-bottom: 30px; /* 説明文とプルダウンの間のスペース */
+                text-align: center; 
+            }
+            
             .controls-container { padding-bottom: 30px; width: 100%; }
-            .preview-side { max-width: 100%; }
+            .preview-side { max-width: 100%; margin-top: 20px; }
         }
     </style>
 </head>
@@ -209,7 +219,7 @@
 
 <div class="main-container">
     <div class="header-section">
-        <h1 class="header-title">KYカード<br>ダウンロード</h1>
+        <h1 class="header-title">KYカード<br>ダウンロード<br>ページ</h1>
     </div>
 
     <fieldset class="content-fieldset">
@@ -217,7 +227,7 @@
         
         <div class="content-grid">
             <div class="preview-side">
-                <span class="pdf-label">PDF版</span>
+                <span class="pdf-label">PDF版サンプル</span>
                 <img src="template-j.jpg" alt="KYカード プレビュー">
             </div>
 
@@ -271,7 +281,6 @@
     downloadBtn.addEventListener('click', () => {
         let url = fileSelect.value;
         if (!url) return;
-        // Android/Googleドライブ対策：直接ダウンロードURLに変換
         if (url.includes('drive.google.com')) {
             const parts = url.split('/');
             const fileIdIndex = parts.indexOf('d') + 1;
