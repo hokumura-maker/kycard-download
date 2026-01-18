@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KYカード ダウンロード</title>
     <style>
-        /* デザイン設定（変更なし） */
+        /* 全体のスタイル：背景色 #F2F7FC */
         body {
             font-family: "HG丸ｺﾞｼｯｸM-PRO", "HGMaruGothicMPRO", "Corporate Logo Medium", sans-serif;
             background-color: #f2f7fc;
@@ -17,21 +17,23 @@
         }
 
         .main-container {
-            width: 100%;
+            width: 95%;
             max-width: 850px;
             text-align: center;
         }
 
+        /* ヘッダー：PCでは中央寄せ */
         .header-section {
             background-image: url('タイトル用.jpg');
             background-size: cover;
-            background-position: center;
+            background-position: center; 
             background-repeat: no-repeat;
-            padding: 80px 0;
+            padding: 60px 0;
             margin-bottom: 40px;
             position: relative;
         }
 
+        /* タイトル装飾 */
         .header-title {
             font-size: 56px;
             font-weight: bold;
@@ -47,6 +49,7 @@
                 0 3px 0 #000, 0 -3px 0 #000;
         }
 
+        /* 外枠：背景 #D0E2F4 の破線枠 */
         .content-fieldset {
             background-color: #d0e2f4;
             border: 3px dashed #333;
@@ -66,14 +69,17 @@
             margin-left: 20px;
         }
 
+        /* コンテンツエリア：PCは横並び */
         .content-grid {
             display: flex;
+            flex-direction: row;
             gap: 40px;
             align-items: flex-start; 
             justify-content: center;
             width: 100%;
         }
 
+        /* プレビュー画像 */
         .preview-side {
             flex: 1;
             max-width: 380px;
@@ -98,6 +104,7 @@
             text-align: center;
         }
 
+        /* 操作エリア */
         .action-side {
             flex: 1;
             display: flex;
@@ -122,10 +129,9 @@
             padding-bottom: 100px; 
         }
 
-        .select-wrapper {
-            margin-bottom: 25px;
-        }
+        .select-wrapper { margin-bottom: 25px; }
 
+        /* セレクトボックス */
         select {
             font-family: inherit;
             width: 100%;
@@ -147,12 +153,9 @@
             background-size: 18px;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
+        select option { text-align: left; font-weight: normal; }
 
-        select option {
-            text-align: left;
-            font-weight: normal;
-        }
-
+        /* 立体的なボタン */
         .download-btn {
             font-family: inherit;
             display: block;
@@ -172,35 +175,33 @@
             background-image: linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(0,0,0,0.05));
             border-bottom: 1px solid rgba(0,0,0,0.1);
         }
+        .download-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 0 #5f9ebf; }
+        .download-btn:active:not(:disabled) { box-shadow: 0 2px 0 #5f9ebf; transform: translateY(4px); background-image: none; }
+        .download-btn:disabled { background-color: #ccc; color: #888; box-shadow: none; cursor: not-allowed; border: 2px solid #bbb; padding: 16px 0; }
 
-        .download-btn:hover:not(:disabled) {
-            background-color: #96d7f3;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 0 #5f9ebf;
-        }
+        #loading-msg { font-size: 13px; text-align: center; color: #555; margin-top: 8px; font-weight: bold; }
 
-        .download-btn:active:not(:disabled) {
-            box-shadow: 0 2px 0 #5f9ebf; 
-            transform: translateY(4px); 
-            background-image: none;
-        }
+        /* --- スマホ用調整（画面幅が600px以下の時） --- */
+        @media screen and (max-width: 600px) {
+            /* 背景画像：左端のキャラクターの体が見えるように調整 */
+            .header-section {
+                background-position: 0% center; /* 0%にすることで左端を基準にします */
+            }
+            
+            /* タイトル文字：キャラクターの体と重ならないよう、さらに右へ移動 */
+            .header-title { 
+                font-size: 26px; /* 画面に収まるようさらに微調整 */
+                letter-spacing: 0.05em; 
+                padding-left: 170px; /* 体が見えるように左側の空白を広げました */
+                text-align: left; 
+            }
 
-        .download-btn:disabled {
-            background-color: #ccc;
-            color: #888;
-            box-shadow: none;
-            cursor: not-allowed;
-            transform: none;
-            border: 2px solid #bbb;
-            padding: 16px 0;
-        }
-
-        #loading-msg {
-            font-size: 13px;
-            text-align: center;
-            color: #555;
-            margin-top: 8px;
-            font-weight: bold;
+            .fieldset-title { font-size: 24px; margin-left: 10px; }
+            .content-fieldset { padding: 20px 15px; }
+            .content-grid { flex-direction: column; align-items: center; gap: 20px; }
+            .description { font-size: 18px; margin-top: 10px; text-align: center; }
+            .controls-container { padding-bottom: 30px; width: 100%; }
+            .preview-side { max-width: 100%; }
         }
     </style>
 </head>
@@ -233,7 +234,6 @@
                         </select>
                         <div id="loading-msg">GASからデータを取得中...</div>
                     </div>
-
                     <button id="downloadBtn" class="download-btn" disabled>ダウンロード</button>
                 </div>
             </div>
@@ -243,7 +243,6 @@
 
 <script>
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4BECIdd8GZLSOo1zSMONOpjsK5Qw2pQbuVkzxUW9BOHGU6aMNXwPyY5mWD3GHVcuS1A/exec';
-    
     const fileSelect = document.getElementById('fileSelect');
     const downloadBtn = document.getElementById('downloadBtn');
     const loadingMsg = document.getElementById('loading-msg');
@@ -265,22 +264,14 @@
             fileSelect.disabled = false;
             loadingMsg.style.display = 'none';
         })
-        .catch(err => {
-            loadingMsg.innerText = '取得エラーが発生しました';
-        });
+        .catch(err => { loadingMsg.innerText = '取得エラーが発生しました'; });
 
-    fileSelect.addEventListener('change', () => {
-        downloadBtn.disabled = !fileSelect.value;
-    });
+    fileSelect.addEventListener('change', () => { downloadBtn.disabled = !fileSelect.value; });
 
-    // ボタンクリック時の処理（ダウンロードURLへの変換機能を追加）
     downloadBtn.addEventListener('click', () => {
         let url = fileSelect.value;
         if (!url) return;
-
-        // GoogleドライブのURLを直接ダウンロード形式に変換
-        // 例: https://drive.google.com/file/d/FILE_ID/view... 
-        //  → https://drive.google.com/uc?export=download&id=FILE_ID
+        // Android/Googleドライブ対策：直接ダウンロードURLに変換
         if (url.includes('drive.google.com')) {
             const parts = url.split('/');
             const fileIdIndex = parts.indexOf('d') + 1;
@@ -289,8 +280,6 @@
                 url = `https://drive.google.com/uc?export=download&id=${fileId}`;
             }
         }
-        
-        // 新しいウィンドウで開く（スマホブラウザの挙動に合わせて location.href に切り替えるのも手です）
         window.open(url, '_blank');
     });
 </script>
