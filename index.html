@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KYカード ダウンロード</title>
     <style>
-        /* 全体のスタイル：背景色を #F2F7FC に設定 */
+        /* デザイン設定（変更なし） */
         body {
             font-family: "HG丸ｺﾞｼｯｸM-PRO", "HGMaruGothicMPRO", "Corporate Logo Medium", sans-serif;
             background-color: #f2f7fc;
@@ -22,7 +22,6 @@
             text-align: center;
         }
 
-        /* ヘッダー：背景にキャラクター画像を表示 */
         .header-section {
             background-image: url('タイトル用.jpg');
             background-size: cover;
@@ -33,7 +32,6 @@
             position: relative;
         }
 
-        /* タイトル装飾：黄色・黒縁・文字間隔0.3em */
         .header-title {
             font-size: 56px;
             font-weight: bold;
@@ -49,7 +47,6 @@
                 0 3px 0 #000, 0 -3px 0 #000;
         }
 
-        /* 外枠：背景を #D0E2F4 に設定 */
         .content-fieldset {
             background-color: #d0e2f4;
             border: 3px dashed #333;
@@ -60,7 +57,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        /* 枠のタイトル */
         .fieldset-title {
             background-color: #f2f7fc; 
             font-size: 36px;
@@ -78,7 +74,6 @@
             width: 100%;
         }
 
-        /* 左側：プレビュー画像 */
         .preview-side {
             flex: 1;
             max-width: 380px;
@@ -103,7 +98,6 @@
             text-align: center;
         }
 
-        /* 右側：説明と操作エリア */
         .action-side {
             flex: 1;
             display: flex;
@@ -111,7 +105,6 @@
             align-self: stretch; 
         }
 
-        /* 説明文：24px太字 */
         .description {
             font-size: 24px; 
             font-weight: bold;
@@ -121,7 +114,6 @@
             color: #333;
         }
 
-        /* 操作エリア：重心を「気持ち上」に配置 */
         .controls-container {
             flex-grow: 1;
             display: flex;
@@ -134,7 +126,6 @@
             margin-bottom: 25px;
         }
 
-        /* セレクトボックス：表示は中央、一覧は左寄せ */
         select {
             font-family: inherit;
             width: 100%;
@@ -162,7 +153,6 @@
             font-weight: normal;
         }
 
-        /* 立体的なダウンロードボタン */
         .download-btn {
             font-family: inherit;
             display: block;
@@ -283,11 +273,25 @@
         downloadBtn.disabled = !fileSelect.value;
     });
 
+    // ボタンクリック時の処理（ダウンロードURLへの変換機能を追加）
     downloadBtn.addEventListener('click', () => {
-        const url = fileSelect.value;
-        if (url) {
-            window.open(url, '_blank');
+        let url = fileSelect.value;
+        if (!url) return;
+
+        // GoogleドライブのURLを直接ダウンロード形式に変換
+        // 例: https://drive.google.com/file/d/FILE_ID/view... 
+        //  → https://drive.google.com/uc?export=download&id=FILE_ID
+        if (url.includes('drive.google.com')) {
+            const parts = url.split('/');
+            const fileIdIndex = parts.indexOf('d') + 1;
+            if (fileIdIndex > 0 && fileIdIndex < parts.length) {
+                const fileId = parts[fileIdIndex].split(/[?#]/)[0];
+                url = `https://drive.google.com/uc?export=download&id=${fileId}`;
+            }
         }
+        
+        // 新しいウィンドウで開く（スマホブラウザの挙動に合わせて location.href に切り替えるのも手です）
+        window.open(url, '_blank');
     });
 </script>
 
