@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KYカード ダウンロード ページ</title>
     <style>
-        /* --- スタイル（背景の左寄せ含む） --- */
+        /* --- 基本スタイル --- */
         body {
             font-family: "HG丸ｺﾞｼｯｸM-PRO", "HGMaruGothicMPRO", "Corporate Logo Medium", sans-serif;
             background-color: #f2f7fc;
@@ -17,6 +17,7 @@
         }
         .main-container { width: 95%; max-width: 850px; text-align: center; }
 
+        /* ヘッダー：スマホ時に左の人物を優先表示 */
         .header-section {
             background-image: url('タイトル用.jpg');
             background-size: cover;
@@ -42,6 +43,7 @@
             text-shadow: 3px 3px 0 #000, -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 0 0 #000, -3px 0 0 #000, 0 3px 0 #000, 0 -3px 0 #000;
         }
 
+        /* コンテンツエリア */
         .content-fieldset { background-color: #d0e2f4; border: 3px dashed #333; border-radius: 12px; padding: 30px 40px; margin: 0 auto; text-align: left; }
         .fieldset-title { background-color: #f2f7fc; font-size: 36px; font-weight: bold; padding: 0 20px; color: #000; margin-left: 20px; }
         .content-grid { display: flex; flex-direction: row; gap: 40px; align-items: flex-start; justify-content: center; width: 100%; }
@@ -62,7 +64,7 @@
             background-repeat: no-repeat; background-position: right 15px center; background-size: 18px;
         }
 
-        /* --- ボタンデザイン --- */
+        /* ボタンデザイン */
         .btn-base {
             font-family: inherit; display: block; width: 100%; color: #333; text-decoration: none; text-align: center;
             padding: 16px 0; font-size: 20px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;
@@ -71,19 +73,25 @@
         .btn-base:active:not(:disabled) { transform: translateY(4px); }
         .btn-base:disabled { background-color: #ccc; color: #888; box-shadow: none; cursor: not-allowed; }
 
-        /* PDFを見るボタン */
         .preview-btn { background-color: #87ceeb; box-shadow: 0 6px 0 #5f9ebf; }
-        .preview-btn:active:not(:disabled) { box-shadow: 0 2px 0 #5f9ebf; }
-
-        /* ダウンロードボタン */
         .dl-btn { background-color: #74b9ff; box-shadow: 0 6px 0 #4a90e2; }
-        .dl-btn:active:not(:disabled) { box-shadow: 0 2px 0 #4a90e2; }
 
-        #loading-msg { font-size: 13px; text-align: center; color: #555; margin-top: 8px; font-weight: bold; }
-        
-        /* 案内メッセージ */
-        #guide-msg { display: none; margin-top: 10px; font-size: 13px; line-height: 1.5; color: #d9534f; background: #fff; padding: 12px; border-radius: 8px; border: 2px solid #d9534f; text-align: left; }
+        /* 重要：案内メッセージのスタイル */
+        #guide-msg { 
+            display: none; 
+            margin-top: 15px; 
+            font-size: 15px; 
+            line-height: 1.6; 
+            color: #d00; 
+            background: #fff; 
+            padding: 15px; 
+            border-radius: 10px; 
+            border: 3px solid #f00; 
+            text-align: left;
+            font-weight: bold;
+        }
 
+        /* スマホ用調整 */
         @media screen and (max-width: 600px) {
             .header-section { background-position: left center !important; padding: 40px 0; }
             .header-title { font-size: 24px; padding-left: 150px; text-align: left; }
@@ -156,33 +164,47 @@
         return match ? match[1] : null;
     }
 
-    // --- 「PDFを見る」のクリック ---
+    // PDFを見る（プレビュー）
     openBtn.addEventListener('click', () => {
         const fileId = getGoogleDriveId(fileSelect.value);
         if (fileId) {
-            // Androidでもブラウザで開くためにGoogle Docs Viewerを介す
+            // Androidでもブラウザで見れるようViewerを使用
             const viewUrl = `https://docs.google.com/viewer?url=https://drive.google.com/uc?id=${fileId}&embedded=true`;
             window.open(viewUrl, '_blank');
         }
     });
 
-    // --- 「ダウンロード」のクリック ---
+    // ダウンロード（保存）
     dlBtn.addEventListener('click', () => {
         const fileId = getGoogleDriveId(fileSelect.value);
-        if (fileId) {
-            const dlUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-            window.open(dlUrl, '_blank');
-            
-            // OS別案内
-            const isiOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-            const isAndroid = /Android/.test(navigator.userAgent);
-            
-            guideMsg.style.display = 'block';
-            if (isiOS) {
-                guideMsg.innerHTML = '<strong>【iPhoneの方へ】</strong><br>ダウンロード後、ブラウザの「↓」アイコンをタップしてファイルを確認してください。';
-            } else if (isAndroid) {
-                guideMsg.innerHTML = '<strong>【Androidの方へ】</strong><br>通知バー、または「ダウンロード」フォルダを確認してください。';
-            }
+        if (!fileId) return;
+
+        const dlUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+        window.open(dlUrl, '_blank');
+        
+        // --- スマホ別の確認案内を表示 ---
+        const ua = navigator.userAgent;
+        const isiOS = /iPhone|iPad|iPod/.test(ua);
+        const isAndroid = /Android/.test(ua);
+        
+        guideMsg.style.display = 'block';
+        
+        if (isiOS) {
+            guideMsg.innerHTML = `
+                【重要：iPhoneの方】<br>
+                1. 画面下の「↓」または「ぁあ」アイコンをタップ<br>
+                2. 「ダウンロード」を選択してファイルを開く<br>
+                ※見当たらない場合は「ファイル」アプリをご確認ください。
+            `;
+        } else if (isAndroid) {
+            guideMsg.innerHTML = `
+                【重要：Androidの方】<br>
+                1. 画面上の通知バーを下へスライド<br>
+                2. 「ダウンロード完了」をタップして開く<br>
+                ※または「Files（ファイル）」アプリ内のダウンロードフォルダをご確認ください。
+            `;
+        } else {
+            guideMsg.innerHTML = `ダウンロードを開始しました。端末のダウンロードフォルダを確認してください。`;
         }
     });
 </script>
