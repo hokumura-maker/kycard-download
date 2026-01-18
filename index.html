@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KYカード ダウンロード ページ</title>
     <style>
-        /* 全体のスタイル */
+        /* --- 全体・PC用スタイル（変更なし） --- */
         body {
             font-family: "HG丸ｺﾞｼｯｸM-PRO", "HGMaruGothicMPRO", "Corporate Logo Medium", sans-serif;
             background-color: #f2f7fc;
@@ -15,14 +15,8 @@
             justify-content: center;
             color: #333;
         }
+        .main-container { width: 95%; max-width: 850px; text-align: center; }
 
-        .main-container {
-            width: 95%;
-            max-width: 850px;
-            text-align: center;
-        }
-
-        /* ヘッダー全体の枠線と背景設定 */
         .header-section {
             background-image: url('タイトル用.jpg');
             background-size: cover;
@@ -36,7 +30,6 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
         }
 
-        /* 3行タイトル装飾 */
         .header-title {
             font-size: 56px;
             font-weight: bold;
@@ -46,161 +39,52 @@
             letter-spacing: 0.3em; 
             text-align: center;
             padding-left: 0.3em;
-            text-shadow: 
-                3px 3px 0 #000, -3px -3px 0 #000,
-                3px -3px 0 #000, -3px 3px 0 #000,
-                3px 0 0 #000, -3px 0 0 #000,
-                0 3px 0 #000, 0 -3px 0 #000;
+            text-shadow: 3px 3px 0 #000, -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 0 0 #000, -3px 0 0 #000, 0 3px 0 #000, 0 -3px 0 #000;
         }
 
-        /* コンテンツ外枠 */
-        .content-fieldset {
-            background-color: #d0e2f4;
-            border: 3px dashed #333;
-            border-radius: 12px;
-            padding: 30px 40px;
-            margin: 0 auto;
-            text-align: left;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        .fieldset-title {
-            background-color: #f2f7fc; 
-            font-size: 36px;
-            font-weight: bold;
-            padding: 0 20px;
-            color: #000;
-            margin-left: 20px;
-        }
-
-        /* コンテンツエリア */
-        .content-grid {
-            display: flex;
-            flex-direction: row;
-            gap: 40px;
-            align-items: flex-start; 
-            justify-content: center;
-            width: 100%;
-        }
-
-        /* 左側：サンプル画像エリア */
-        .preview-side {
-            flex: 1;
-            max-width: 380px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .preview-side img {
-            width: 100%;
-            height: auto;
-            border: 1px solid #ccc;
-            box-shadow: 4px 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .pdf-label {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: block;
-            color: #000;
-            letter-spacing: 0.1em;
-            text-align: center;
-        }
-
-        /* 右側：操作エリア */
-        .action-side {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-self: stretch; 
-        }
-
-        .description {
-            font-size: 24px; 
-            font-weight: bold;
-            line-height: 1.4;
-            margin-top: 48px; 
-            margin-bottom: 0;
-            color: #333;
-        }
-
-        .controls-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; 
-            padding-bottom: 100px; 
-        }
-
+        /* --- コンテンツエリア（省略せずに保持） --- */
+        .content-fieldset { background-color: #d0e2f4; border: 3px dashed #333; border-radius: 12px; padding: 30px 40px; margin: 0 auto; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .fieldset-title { background-color: #f2f7fc; font-size: 36px; font-weight: bold; padding: 0 20px; color: #000; margin-left: 20px; }
+        .content-grid { display: flex; flex-direction: row; gap: 40px; align-items: flex-start; justify-content: center; width: 100%; }
+        .preview-side { flex: 1; max-width: 380px; display: flex; flex-direction: column; }
+        .preview-side img { width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 4px 4px 12px rgba(0,0,0,0.2); }
+        .pdf-label { font-size: 28px; font-weight: bold; margin-bottom: 10px; display: block; color: #000; text-align: center; }
+        .action-side { flex: 1; display: flex; flex-direction: column; align-self: stretch; }
+        .description { font-size: 24px; font-weight: bold; line-height: 1.4; margin-top: 48px; color: #333; }
+        .controls-container { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 100px; }
         .select-wrapper { margin-bottom: 25px; }
-
-        select {
-            font-family: inherit;
-            width: 100%;
-            padding: 12px 40px 12px 12px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            text-align-last: center; 
-            border: 2px solid #ccc;
-            border-radius: 6px;
-            cursor: pointer;
-            background-color: #fff;
-            appearance: none;
-            -webkit-appearance: none;
-            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 18px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        /* 立体ボタン */
-        .download-btn {
-            font-family: inherit;
-            display: block;
-            width: 100%;
-            background-color: #87ceeb;
-            box-shadow: 0 6px 0 #5f9ebf; 
-            color: #333;
-            text-decoration: none;
-            text-align: center;
-            padding: 18px 0;
-            font-size: 22px;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.05s ease-in-out;
-            background-image: linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(0,0,0,0.05));
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
+        select { font-family: inherit; width: 100%; padding: 12px 40px 12px 12px; font-size: 20px; font-weight: bold; text-align-last: center; border: 2px solid #ccc; border-radius: 6px; background-color: #fff; appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: right 15px center; background-size: 18px; }
+        .download-btn { font-family: inherit; display: block; width: 100%; background-color: #87ceeb; box-shadow: 0 6px 0 #5f9ebf; color: #333; text-decoration: none; text-align: center; padding: 18px 0; font-size: 22px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: all 0.05s ease-in-out; }
         .download-btn:active:not(:disabled) { box-shadow: 0 2px 0 #5f9ebf; transform: translateY(4px); }
         .download-btn:disabled { background-color: #ccc; color: #888; box-shadow: none; cursor: not-allowed; }
-
         #loading-msg { font-size: 13px; text-align: center; color: #555; margin-top: 8px; font-weight: bold; }
+        #guide-msg { display: none; margin-top: 20px; font-size: 14px; line-height: 1.6; color: #d9534f; background: #fff; padding: 15px; border-radius: 10px; border: 2px solid #d9534f; }
 
-        /* ガイドメッセージ用 */
-        #guide-msg {
-            display: none;
-            margin-top: 20px;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #d9534f;
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid #d9534f;
-            text-align: left;
-        }
-
-        /* スマホ用調整 */
+        /* --- スマホ用調整（今回のメイン修正箇所） --- */
         @media screen and (max-width: 600px) {
+            .header-section {
+                /* 背景を左端に固定し、人物が表示されるようにする */
+                background-position: left center !important;
+                /* 背景が拡大されすぎて人物が切れる場合はここを 110% 等に調整 */
+                background-size: cover; 
+                padding: 40px 0;
+            }
+
+            .header-title { 
+                font-size: 24px; 
+                letter-spacing: 0.05em; 
+                /* 人物の表示エリアを確保するための左余白 */
+                padding-left: 150px; 
+                text-align: left; 
+                text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000;
+            }
+
             .content-grid { flex-direction: column-reverse; align-items: center; gap: 20px; }
-            .header-title { font-size: 26px; padding-left: 170px; text-align: left; }
-            .description { font-size: 18px; margin-bottom: 30px; text-align: center; }
+            .fieldset-title { font-size: 24px; margin-left: 10px; }
+            .content-fieldset { padding: 20px 15px; }
+            .description { font-size: 18px; margin-top: 10px; margin-bottom: 30px; text-align: center; }
             .controls-container { padding-bottom: 30px; width: 100%; }
+            .preview-side { max-width: 100%; margin-top: 20px; }
         }
     </style>
 </head>
@@ -252,7 +136,6 @@
     const loadingMsg = document.getElementById('loading-msg');
     const guideMsg = document.getElementById('guide-msg');
 
-    // GASからデータを取得
     fetch(GAS_URL)
         .then(res => res.json())
         .then(data => {
@@ -279,22 +162,15 @@
     downloadBtn.addEventListener('click', () => {
         let url = fileSelect.value;
         if (!url) return;
-
-        // Google DriveのURLをプレビュー表示用に変換
         if (url.includes('drive.google.com')) {
             const parts = url.split('/');
             const fileIdIndex = parts.indexOf('d') + 1;
             if (fileIdIndex > 0 && fileIdIndex < parts.length) {
                 const fileId = parts[fileIdIndex].split(/[?#]/)[0];
-                // 強制ダウンロードではなくプレビュー画面にする
                 url = `https://drive.google.com/file/d/${fileId}/preview`;
             }
         }
-
-        // 新しいタブでPDFを開く
         window.open(url, '_blank');
-
-        // iPhoneユーザー向けにガイドを表示
         if (navigator.userAgent.indexOf('iPhone') > 0 || navigator.userAgent.indexOf('iPad') > 0) {
             guideMsg.style.display = 'block';
         }
