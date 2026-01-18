@@ -3,51 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDFダウンロードセンター</title>
+    <title>KYカード ダウンロード</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
-        .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .file-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; }
-        .btn { background: #0061ff; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-size: 14px; }
-        .loading { text-align: center; color: #666; }
+        /* 全体のスタイル：背景色を #F2F7FC に設定 */
+        body {
+            font-family: "HG丸ｺﾞｼｯｸM-PRO", "HGMaruGothicMPRO", "Corporate Logo Medium", sans-serif;
+            background-color: #f2f7fc;
+            margin: 0;
+            padding: 20px 0 300px 0; 
+            display: flex;
+            justify-content: center;
+            color: #333;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 850px;
+            text-align: center;
+        }
+
+        /* ヘッダー：背景にキャラクター画像を表示 */
+        .header-section {
+            background-image: url('タイトル用.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 80px 0;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* タイトル装飾：黄色・黒縁・文字間隔0.3em */
+        .header-title {
+            font-size: 56px;
+            font-weight: bold;
+            color: #ffff00;
+            margin: 0;
+            line-height: 1.3;
+            letter-spacing: 0.3em; 
+            padding-left: 0.3em; 
+            text-shadow: 
+                3px 3px 0 #000, -3px -3px 0 #000,
+                3px -3px 0 #000, -3px 3px 0 #000,
+                3px 0 0 #000, -3px 0 0 #000,
+                0 3px 0 #000, 0 -3px 0 #000;
+        }
+
+        /* 外枠：背景を #D0E2F4 に設定 */
+        .content-fieldset {
+            background-color: #d0e2f4;
+            border: 3px dashed #333;
+            border-radius: 12px;
+            padding: 30px 40px;
+            margin: 0 auto;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* 枠のタイトル */
+        .fieldset-title {
+            background-color: #f2f7fc; 
+            font-size: 36px;
+            font-weight: bold;
+            padding: 0 20px;
+            color: #000;
+            margin-left: 20px;
+        }
+
+        .content-grid {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start; 
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* 左側：プレビュー画像 */
+        .preview-side {
+            flex: 1;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-side img {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            box-shadow: 4px 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .pdf-label {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            color: #000;
+            letter-spacing: 0.1em;
+            text-align: center;
+        }
+
+        /* 右側：説明と操作エリア */
+        .action-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-self: stretch; 
+        }
+
+        /* 説明文：24px太字 */
+        .description {
+            font-size: 24px; 
+            font-weight: bold;
+            line-height: 1.4;
+            margin-top: 48px; 
+            margin-bottom: 0;
+            color: #333;
+        }
+
+        /* 操作エリア：重心を「気持ち上」に配置 */
+        .controls-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            padding-bottom: 100px; 
+        }
+
+        .select-wrapper {
+            margin-bottom: 25px;
+        }
+
+        /* セレクトボックス：表示は中央、一覧は左寄せ */
+        select {
+            font-family: inherit;
+            width: 100%;
+            padding: 12px 40px 12px 12px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            text-align-last: center; 
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #fff;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 18px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        select option {
+            text-align: left;
+            font-weight: normal;
+        }
+
+        /* 立体的なダウンロードボタン */
+        .download-btn {
+            font-family: inherit;
+            display: block;
+            width: 100%;
+            background-color: #87ceeb;
+            box-shadow: 0 6px 0 #5f9ebf; 
+            color: #333;
+            text-decoration: none;
+            text-align: center;
+            padding: 18px 0;
+            font-size: 22px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.05s ease-in-out;
+            background-image: linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(0,0,0,0.05));
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .download-btn:hover:not(:disabled) {
+            background-color: #96d7f3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #5f9ebf;
+        }
+
+        .download-btn:active:not(:disabled) {
+            box-shadow: 0 2px 0 #5f9ebf; 
+            transform: translateY(4px); 
+            background-image: none;
+        }
+
+        .download-btn:disabled {
+            background-color: #ccc;
+            color: #888;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+            border: 2px solid #bbb;
+            padding: 16px 0;
+        }
+
+        #loading-msg {
+            font-size: 13px;
+            text-align: center;
+            color: #555;
+            margin-top: 8px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h3>📄 KYカード［PDF版］ダウンロード一覧</h3>
-        <div id="list" class="loading">読み込み中...</div>
+
+<div class="main-container">
+    <div class="header-section">
+        <h1 class="header-title">KYカード<br>ダウンロード</h1>
     </div>
 
-    <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4BECIdd8GZLSOo1zSMONOpjsK5Qw2pQbuVkzxUW9BOHGU6aMNXwPyY5mWD3GHVcuS1A/exec';
+    <fieldset class="content-fieldset">
+        <legend class="fieldset-title">一人親方 PDF版</legend>
+        
+        <div class="content-grid">
+            <div class="preview-side">
+                <span class="pdf-label">PDF版</span>
+                <img src="template-j.jpg" alt="KYカード プレビュー">
+            </div>
 
-        // GASからファイル一覧を取得
-        fetch(GAS_URL)
-            .then(res => res.json())
-            .then(data => {
-                const listDiv = document.getElementById('list');
-                listDiv.innerHTML = ''; // 読み込み中を消す
-                
-                if (data.length === 0) {
-                    listDiv.innerText = 'ファイルが見つかりません。';
-                    return;
-                }
+            <div class="action-side">
+                <p class="description">
+                    PDFに直接記入ができて<br>
+                    スマホだけでKY報告が<br>完結できます
+                </p>
 
-                data.forEach(file => {
-                    const item = document.createElement('div');
-                    item.className = 'file-item';
-                    item.innerHTML = `
-                        <span>${file.name}</span>
-                        <a href="${file.url}" class="btn">保存</a>
-                    `;
-                    listDiv.appendChild(item);
-                });
-            })
-            .catch(err => {
-                document.getElementById('list').innerText = 'エラーが発生しました。';
-                console.error(err);
+                <div class="controls-container">
+                    <div class="select-wrapper">
+                        <select id="fileSelect" disabled>
+                            <option value="">ファイルを選択</option>
+                        </select>
+                        <div id="loading-msg">GASからデータを取得中...</div>
+                    </div>
+
+                    <button id="downloadBtn" class="download-btn" disabled>ダウンロード</button>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<script>
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4BECIdd8GZLSOo1zSMONOpjsK5Qw2pQbuVkzxUW9BOHGU6aMNXwPyY5mWD3GHVcuS1A/exec';
+    
+    const fileSelect = document.getElementById('fileSelect');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const loadingMsg = document.getElementById('loading-msg');
+
+    fetch(GAS_URL)
+        .then(res => res.json())
+        .then(data => {
+            fileSelect.innerHTML = '<option value="">ファイルを選択</option>';
+            if (data.length === 0) {
+                fileSelect.innerHTML = '<option value="">ファイルがありません</option>';
+                return;
+            }
+            data.forEach(file => {
+                const option = document.createElement('option');
+                option.value = file.url;
+                option.textContent = file.name;
+                fileSelect.appendChild(option);
             });
-    </script>
-</body>
+            fileSelect.disabled = false;
+            loadingMsg.style.display = 'none';
+        })
+        .catch(err => {
+            loadingMsg.innerText = '取得エラーが発生しました';
+        });
 
+    fileSelect.addEventListener('change', () => {
+        downloadBtn.disabled = !fileSelect.value;
+    });
+
+    downloadBtn.addEventListener('click', () => {
+        const url = fileSelect.value;
+        if (url) {
+            window.open(url, '_blank');
+        }
+    });
+</script>
+
+</body>
 </html>
