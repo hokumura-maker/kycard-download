@@ -53,7 +53,7 @@
                 0 3px 0 #000, 0 -3px 0 #000;
         }
 
-        /* コンテンツ外枠：背景 #D0E2F4 */
+        /* コンテンツ外枠 */
         .content-fieldset {
             background-color: #d0e2f4;
             border: 3px dashed #333;
@@ -73,7 +73,7 @@
             margin-left: 20px;
         }
 
-        /* コンテンツエリア：PCは横並び */
+        /* コンテンツエリア */
         .content-grid {
             display: flex;
             flex-direction: row;
@@ -149,14 +149,12 @@
             background-color: #fff;
             appearance: none;
             -webkit-appearance: none;
-            -moz-appearance: none;
             background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
             background-repeat: no-repeat;
             background-position: right 15px center;
             background-size: 18px;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
-        select option { text-align: left; font-weight: normal; }
 
         /* 立体ボタン */
         .download-btn {
@@ -178,40 +176,31 @@
             background-image: linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(0,0,0,0.05));
             border-bottom: 1px solid rgba(0,0,0,0.1);
         }
-        .download-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 0 #5f9ebf; }
-        .download-btn:active:not(:disabled) { box-shadow: 0 2px 0 #5f9ebf; transform: translateY(4px); background-image: none; }
-        .download-btn:disabled { background-color: #ccc; color: #888; box-shadow: none; cursor: not-allowed; border: 2px solid #bbb; padding: 16px 0; }
+        .download-btn:active:not(:disabled) { box-shadow: 0 2px 0 #5f9ebf; transform: translateY(4px); }
+        .download-btn:disabled { background-color: #ccc; color: #888; box-shadow: none; cursor: not-allowed; }
 
         #loading-msg { font-size: 13px; text-align: center; color: #555; margin-top: 8px; font-weight: bold; }
 
-        /* --- スマホ用調整 --- */
+        /* ガイドメッセージ用 */
+        #guide-msg {
+            display: none;
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #d9534f;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #d9534f;
+            text-align: left;
+        }
+
+        /* スマホ用調整 */
         @media screen and (max-width: 600px) {
-            .content-grid { 
-                flex-direction: column-reverse; 
-                align-items: center; 
-                gap: 20px; 
-            }
-            
-            .header-section { background-position: 0% center; }
-            .header-title { 
-                font-size: 26px; 
-                letter-spacing: 0.05em; 
-                padding-left: 170px; 
-                text-align: left; 
-            }
-            .fieldset-title { font-size: 24px; margin-left: 10px; }
-            .content-fieldset { padding: 20px 15px; }
-            
-            /* スマホ時の余白調整（説明文の下に30pxのスペースを追加） */
-            .description { 
-                font-size: 18px; 
-                margin-top: 10px; 
-                margin-bottom: 30px; /* 説明文とプルダウンの間のスペース */
-                text-align: center; 
-            }
-            
+            .content-grid { flex-direction: column-reverse; align-items: center; gap: 20px; }
+            .header-title { font-size: 26px; padding-left: 170px; text-align: left; }
+            .description { font-size: 18px; margin-bottom: 30px; text-align: center; }
             .controls-container { padding-bottom: 30px; width: 100%; }
-            .preview-side { max-width: 100%; margin-top: 20px; }
         }
     </style>
 </head>
@@ -244,7 +233,12 @@
                         </select>
                         <div id="loading-msg">GASからデータを取得中...</div>
                     </div>
-                    <button id="downloadBtn" class="download-btn" disabled>ダウンロード</button>
+                    <button id="downloadBtn" class="download-btn" disabled>PDFを開く</button>
+                    
+                    <div id="guide-msg">
+                        <strong>【iPhoneをご利用の方へ】</strong><br>
+                        PDFが開いたら、画面下の<strong>共有アイコン（四角に↑）</strong>をタップし、<strong>「"ファイル"に保存」</strong>を選択してください。
+                    </div>
                 </div>
             </div>
         </div>
@@ -256,7 +250,9 @@
     const fileSelect = document.getElementById('fileSelect');
     const downloadBtn = document.getElementById('downloadBtn');
     const loadingMsg = document.getElementById('loading-msg');
+    const guideMsg = document.getElementById('guide-msg');
 
+    // GASからデータを取得
     fetch(GAS_URL)
         .then(res => res.json())
         .then(data => {
@@ -276,25 +272,34 @@
         })
         .catch(err => { loadingMsg.innerText = '取得エラーが発生しました'; });
 
-    fileSelect.addEventListener('change', () => { downloadBtn.disabled = !fileSelect.value; });
+    fileSelect.addEventListener('change', () => { 
+        downloadBtn.disabled = !fileSelect.value; 
+    });
 
     downloadBtn.addEventListener('click', () => {
         let url = fileSelect.value;
         if (!url) return;
+
+        // Google DriveのURLをプレビュー表示用に変換
         if (url.includes('drive.google.com')) {
             const parts = url.split('/');
             const fileIdIndex = parts.indexOf('d') + 1;
             if (fileIdIndex > 0 && fileIdIndex < parts.length) {
                 const fileId = parts[fileIdIndex].split(/[?#]/)[0];
-                url = `https://drive.google.com/uc?export=download&id=${fileId}`;
+                // 強制ダウンロードではなくプレビュー画面にする
+                url = `https://drive.google.com/file/d/${fileId}/preview`;
             }
         }
+
+        // 新しいタブでPDFを開く
         window.open(url, '_blank');
+
+        // iPhoneユーザー向けにガイドを表示
+        if (navigator.userAgent.indexOf('iPhone') > 0 || navigator.userAgent.indexOf('iPad') > 0) {
+            guideMsg.style.display = 'block';
+        }
     });
 </script>
 
 </body>
 </html>
-
-
-
